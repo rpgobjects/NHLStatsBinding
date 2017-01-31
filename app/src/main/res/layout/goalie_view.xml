@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <variable name="dark" type="boolean"/>
+        <variable name="goalie" type="com.rpgobjects.nhlstatsbinding.presenter.GoaliePresenter"/>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/goalieActionImage"
+            android:scaleType="centerCrop"
+            app:playerId="@{goalie.playerId}"
+            android:contentDescription="@{goalie.playerId}"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            />
+
+        <TextView
+            android:padding="8dp"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{goalie.playerName.toUpperCase()}"
+            android:textColor="@color/darkLabel"
+            android:background="@color/colorPrimaryOverlay"
+            android:layout_alignBottom="@+id/goalieActionImage"
+            />
+
+        <LinearLayout
+            android:layout_below="@+id/goalieActionImage"
+            android:background="@{dark ? @color/darkBackground : @color/lightBackground}"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_marginTop="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/svPer"
+                android:textSize="18sp"
+                android:textColor="@{dark ? @color/darkLabel : @color/lightLabel}"
+                />
+            <TextView
+                android:text="@{goalie.savePercentage}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="32sp"
+                android:textColor="@{dark ? @color/darkStat : @color/lightStat}"/>
+            <TextView
+                android:layout_marginTop="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gaa"
+                android:textSize="18sp"
+                android:textColor="@{dark ? @color/darkLabel : @color/lightLabel}"/>
+            <TextView
+                android:text="@{goalie.goalsAgainst}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@{dark ? @color/darkStat : @color/lightStat}"
+                android:textSize="32sp"/>
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

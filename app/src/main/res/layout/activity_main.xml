@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <variable name="dark" type="boolean"/>
+        <variable name="goalieA" type="com.rpgobjects.nhlstatsbinding.presenter.GoaliePresenter"/>
+        <variable name="goalieB" type="com.rpgobjects.nhlstatsbinding.presenter.GoaliePresenter"/>
+    </data>
+
+<android.support.percent.PercentRelativeLayout
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <include
+        android:id="@+id/goalieViewA"
+        app:goalie="@{goalieA}"
+        app:dark="@{false}"
+        layout="@layout/goalie_view"
+        app:layout_widthPercent="50%"
+        app:layout_heightPercent="100%"
+        />
+    <include
+        android:id="@+id/goalieViewB"
+        app:goalie="@{goalieB}"
+        app:dark="@{true}"
+        layout="@layout/goalie_view"
+        app:layout_widthPercent="50%"
+        app:layout_heightPercent="100%"
+        android:layout_toRightOf="@+id/goalieViewA"
+        />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabA"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:tint="#fff"
+        app:backgroundTint="#000"
+        app:srcCompat="@drawable/goalie_mask_black_silhouette" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabB"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:tint="#000"
+        app:backgroundTint="#fff"
+        app:srcCompat="@drawable/goalie_mask_black_silhouette" />
+
+    <android.support.v7.widget.Toolbar
+        android:visibility="gone"
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimaryOverlay"
+        />
+</android.support.percent.PercentRelativeLayout>
+</layout>

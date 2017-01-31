@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">NHL Goalies</string>
+    <string name="svPer">Sv%</string>
+    <string name="gaa">GAA</string>
+</resources>
