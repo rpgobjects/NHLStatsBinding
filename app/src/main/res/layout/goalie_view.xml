@@ -5,7 +5,7 @@
     <data>
         <import type="android.view.View"/>
         <variable name="dark" type="boolean"/>
-        <variable name="goalie" type="com.rpgobjects.nhlstatsbinding.presenter.GoaliePresenter"/>
+        <variable name="goalie" type="com.rpgobjects.nhlstatsbinding.ui.GoaliePresenter"/>
     </data>
 
     <RelativeLayout
@@ -15,7 +15,7 @@
         <ImageView
             android:id="@+id/goalieActionImage"
             android:scaleType="centerCrop"
-            app:playerId="@{goalie.playerId}"
+            app:actionShotId="@{goalie.playerId}"
             android:contentDescription="@{goalie.playerId}"
             android:layout_width="match_parent"
             android:layout_height="200dp"

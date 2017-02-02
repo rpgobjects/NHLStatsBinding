@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <variable name="dark" type="boolean"/>
+        <variable name="presenter" type="com.rpgobjects.nhlstatsbinding.ui.GoaliePresenter"/>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{(v)-> presenter.onGoalieSelected()}">
+
+        <ImageView
+            android:id="@+id/goalieImage"
+            android:scaleType="centerCrop"
+            app:headShotId="@{presenter.playerId}"
+            android:contentDescription="@{presenter.playerId}"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="4dp"
+            />
+
+        <TextView
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/goalieImage"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:paddingLeft="8dp"
+            android:text="@{presenter.playerName.toUpperCase()}"
+            android:textColor="@color/darkLabel"
+            android:background="@color/colorPrimaryOverlay"
+            />
+
+    </RelativeLayout>
+</layout>

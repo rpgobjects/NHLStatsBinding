@@ -5,8 +5,8 @@
     <data>
         <import type="android.view.View"/>
         <variable name="dark" type="boolean"/>
-        <variable name="goalieA" type="com.rpgobjects.nhlstatsbinding.presenter.GoaliePresenter"/>
-        <variable name="goalieB" type="com.rpgobjects.nhlstatsbinding.presenter.GoaliePresenter"/>
+        <variable name="goalieA" type="com.rpgobjects.nhlstatsbinding.ui.GoaliePresenter"/>
+        <variable name="goalieB" type="com.rpgobjects.nhlstatsbinding.ui.GoaliePresenter"/>
     </data>
 
 <android.support.percent.PercentRelativeLayout
@@ -42,7 +42,8 @@
         android:layout_margin="8dp"
         android:tint="#fff"
         app:backgroundTint="#000"
-        app:srcCompat="@drawable/goalie_mask_black_silhouette" />
+        app:srcCompat="@drawable/goalie_mask_black_silhouette"
+        android:onClick="onGoalieA"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabB"
@@ -53,6 +54,7 @@
         android:layout_margin="8dp"
         android:tint="#000"
         app:backgroundTint="#fff"
+        android:onClick="@{(v)->goalieB.onGoalieSelected()}"
         app:srcCompat="@drawable/goalie_mask_black_silhouette" />
 
     <android.support.v7.widget.Toolbar

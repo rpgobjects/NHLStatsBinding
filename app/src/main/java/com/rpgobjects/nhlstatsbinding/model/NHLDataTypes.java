@@ -83,6 +83,14 @@ public class NHLDataTypes {
         @SerializedName("wins")
         @Expose
         public Integer wins;
+
+        public String toJson() {
+            return new Gson().toJson(this);
+        }
+
+        static public PlayerSummary fromJson(String json) {
+            return new Gson().fromJson(json,PlayerSummary.class);
+        }
     }
 
     public static class StatsSearchResult {

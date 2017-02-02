@@ -1,23 +1,27 @@
 package com.rpgobjects.nhlstatsbinding;
 
-import android.databinding.BindingAdapter;
+import android.app.Activity;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ImageView;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.rpgobjects.nhlstatsbinding.databinding.ActivityMainBinding;
 import com.rpgobjects.nhlstatsbinding.model.NHLDataTypes;
 import com.rpgobjects.nhlstatsbinding.model.NHLService;
 import com.rpgobjects.nhlstatsbinding.model.ServiceGenerator;
-import com.rpgobjects.nhlstatsbinding.presenter.GoaliePresenter;
-import com.squareup.picasso.Picasso;
+import com.rpgobjects.nhlstatsbinding.ui.GoaliePresenter;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int GOALIE_A = 955;
+    private static final int GOALIE_B = 956;
+
     ActivityMainBinding binding;
     NHLDataTypes.StatsSearchResult statsSearchResult;
 
@@ -30,11 +34,19 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolBar);
         loadGoalies();
         binding.setDark(true);
+        // presenter event handler used by lambda expression
+        binding.getGoalieB().setGoalieSelectedHandler(new GoaliePresenter.GoalieSelectedHandler() {
+            @Override
+            public void onGoalieSelected(NHLDataTypes.PlayerSummary goalie) {
+                PlayerPickerActivity.start(MainActivity.this,GOALIE_B);
+            }
+        });
+
     }
 
-    @BindingAdapter("bind:playerId")
-    public static void loadImage(ImageView view, String playerId) {
-        Picasso.with(view.getContext()).load("https://nhl.bamcontent.com/images/actionshots/"+playerId+".jpg").placeholder(R.drawable.goalie_mask_black_silhouette).into(view);
+    // old school method reference handler
+    public void onGoalieA(View view) {
+        PlayerPickerActivity.start(this,GOALIE_A);
     }
 
     public void loadGoalies() {
@@ -47,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<NHLDataTypes.StatsSearchResult> call, Response<NHLDataTypes.StatsSearchResult> response) {
                 statsSearchResult = response.body();
                 binding.getGoalieA().setPlayerSummary(statsSearchResult.playerList.get(0));
-                binding.getGoalieB().setPlayerSummary(statsSearchResult.playerList.get(10));
+                binding.getGoalieB().setPlayerSummary(statsSearchResult.playerList.get(1));
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("goalies",statsSearchResult.toJson()).apply();
             }
 
             @Override
@@ -55,6 +68,19 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode== Activity.RESULT_OK) {
+            NHLDataTypes.PlayerSummary playerSummary = NHLDataTypes.PlayerSummary.fromJson(data.getStringExtra("goalie"));
+            if(requestCode==GOALIE_A) {
+                binding.getGoalieA().setPlayerSummary(playerSummary);
+            } else {
+                binding.getGoalieB().setPlayerSummary(playerSummary);
+            }
+        }
     }
 }
 
