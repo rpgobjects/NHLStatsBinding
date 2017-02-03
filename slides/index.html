@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>@Binding Android</title>
+    <title>Android Data Binding</title>
     <meta charset="utf-8">
     <style>
         @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
@@ -50,9 +50,20 @@
             width: 90%
         }
 
+        .img25 IMG {
+            height: 250px;
+            text-align: center;
+        }
+
+        .img35 IMG {
+            height: 350px;
+            text-align: center;
+        }
+
     </style>
 </head>
 <body>
+<!-- @formatter:off -->
 <textarea id="source">
 
 class: center, middle, inverse
@@ -68,6 +79,22 @@ github.com/rpgobjects
 linkedin.com/in/rpgobjects
 
 plus.google.com/+ChrisDavis0
+
+---
+class: center, middle, inverse
+
+# Example Project
+
+.screenshot[![](screen1.png)]
+
+.green[https://github.com/rpgobjects/NHLStatsBinding]
+
+---
+class: center, middle, inverse
+
+# Example Data (nhl.com):
+
+.window[![Default-aligned image](nhlcom.png)]
 
 ---
 # View and Data Binding
@@ -94,6 +121,41 @@ button.setText('Some text');
 button.setOnClickListener(handler);
 ```
 ---
+# More Why...
+
+--
+
+.img25[![](mvvm-databinding.png)]
+
+- Ideal for MVVM / MVP
+
+--
+
+- Presenters / View Models / Models can be unit tested (Faster!)
+
+--
+
+- Views still testable via Espresso
+
+--
+
+- Views are Null / Thread safe
+
+---
+
+# Why Not?
+
+--
+
+- Does not work with jack compilers
+- No -> Java 8 features :(
+
+.green[https://code.google.com/p/android/issues/detail?id=210615]
+
+.img35[![Default-aligned image](sad.jpg)]
+
+---
+
 class: center, middle
 
 # .butter[Butter Knife]
@@ -103,27 +165,19 @@ class: center, middle
 jakewharton.github.io/butterknife
 
 ---
+
 class: center, middle, inverse
 
-# Example Project
-
-.screenshot[![](screen1.png)]
-
-.green[https://github.com/rpgobjects/NHLStatsBinding]
+# Databinding Basics
 
 ---
 class: center, middle, inverse
 
-# Example Data (nhl.com):
+# 2016 Example Project
 
-.window[![Default-aligned image](nhlcom.png)]
+.screenshot[![](screen500.jpg)]
 
----
-
-class: center, middle, inverse
-
-# Android Databinding
-
+.green[https://github.com/rpgobjects/BindingAndroid]
 
 ---
 
@@ -169,14 +223,6 @@ android {
     </RelativeLayout>
 </layout>
 ```
-
----
-
-class: center, middle, inverse
-
-#Basic Data Binding*
-
-*For data that never changes.
 
 ---
 
@@ -240,7 +286,7 @@ public class SuperHero {
 
 --
 
-- Binding class will be generated based on the name of the layout file*
+- Binding class will be generated based on the name of the layout file
 
 --
 
@@ -271,9 +317,19 @@ public class PojoActivity extends AppCompatActivity {
 
 ```
 
-*Can be changed if required
+- Won't detect changes, but can reset object for brute force update.
+
 
 ---
+
+class: center, middle, inverse
+
+# <? Layout Files ?>
+
+@{deeper dive}
+
+---
+
 
 #Expression Language
 Java like expressions you can use in `@{}`
@@ -297,105 +353,192 @@ Java like expressions you can use in `@{}`
 
 ---
 
-#Imports
+#Layouts
 
-You can import for easy reference to classes inside your layout file
+- Import classes
 
 ```XML
-<layout ....>
-    <data>
-        <import type="com.devfestmn.bindingandroid.model.SuperHero" />
-        <import type="android.view.View"/>
-        <variable name="superhero" type="SuperHero" />
-        ....
-    </data>
-    <RelativeLayout ....>
-        <TextView
-        ....
-        android:text="@{superhero.name}"
-        />
-        <TextView
-        ....
-        android:text='@{"AKA " + superhero.alias}'
-        android:visibility="@{(superhero.alias!=null) ? View.VISIBLE : View.GONE}"
-        />
-
-    </RelativeLayout>
-</layout>
+<import type="android.view.View"/>
+    ...
+<TextView android:visibility="@{hide ? View.VISIBLE : View.GONE}" />
 ```
 
----
+- Alias class name
 
-#Resources
+
+```XML
+    <import type="com.example.goalie.View" alias="goalieView"/>
+```
 
 - Access resources as part of expressions
 
 ```XML
-android:padding="@{large? @dimen/largePadding : @dimen/smallPadding}"
+<TextView android:padding="@{largeScreen? @dimen/padingLg : @dimen/paddingSm}" />
 ```
-
----
-
-#Resources
-
-- Access resources as part of expressions
-
-```XML
-android:padding="@{large? @dimen/largePadding : @dimen/smallPadding}"
-```
-
 - Format strings can be evaluated by providing parameters:
 
 ```XML
-<resources>
-    ....
-    <string name="firstApp">%1$s first appeared in %2$s</string>
-</resources>
+    // string.xml
+    <string name="title">%1$s is number %2$s</string>
+    // layout.xml
+    <TextView  android:text="@{@string/title(goalie.name, goalie.number)}"/>
 ```
+---
+
+#Includes
 
 ```XML
-<TextView
-....
-android:text="@{@string/firstApp(superhero.name, superhero.firstAppearance)}"
-/>
+<?xml version="1.0" encoding="utf-8"?>
+<layout >
+    <data>
+        <variable
+             name="goalieA"
+             type="com.rpgobjects.nhlstatsbinding.ui.GoaliePresenter"
+        />
+        ....
+    </data>
+    <android.support.percent.PercentRelativeLayout>
+        ....
+        <include
+            android:id="@+id/goalieViewA"
+            app:goalie="@{goalieA}"
+            layout="@layout/goalie_view"
+        />
+        ....
+    </android.support.percent.PercentRelativeLayout>
+</layout>
 ```
+- Can't use `<merge/>`!
 
 ---
 
-#Binding Events
+class: center, middle, inverse
 
---
+# Code Generation
 
-Handler
+@{under the hood}
+
+---
+
+# Binding Class
+
+- Generates class extend from `ViewDataBinding`
+
+- Name based on layout name but can be customized
+
+```XML
+    <data class="GoalieMainBinding">
+```
+
+- Views With IDs
+
+- Variables
+
+```XML
+    // goalie_view.xml
+    <variable name="goalie" type="com....GoaliePresenter"/>
+    ....
+    <ImageView android:id="@+id/goalieActionImage" />
+```
 
 ```Java
-public class Avengers {
-
-    public void assemble(View view) {
-        Snackbar.make(view,"Assemble!",Snackbar.LENGTH_LONG).show();
-    }
-
-    public void notMember(View view) {
-        Snackbar.make(view,"You're not an Avenger!",Snackbar.LENGTH_LONG).show();
-    }
-}
+    // GoalieViewBinding.java
+    public void setGoalie(GoaliePresenter goalie){....};
+    public GoaliePresenter getGoalie() {....}
+    ....
+    public final android.widget.ImageView goalieActionImage;
 ```
+---
 
---
+# Includes
 
-Variable and Binding expression
+Includes have their own binding classes which are added to the containing binding class by ID
 
 ```XML
-<import type="com.devfestmn.bindingandroid.handlers.Avengers" />
-<variable name="handlers" type="Avengers" />
+// activity_main.xml
+<layout >
+    <data>
+        <variable
+             name="goalieA"
+             type="com.rpgobjects.nhlstatsbinding.ui.GoaliePresenter"
+        />
+        ....
+    </data>
+    ....
+        <include
+            android:id="@+id/goalieViewA"
+            app:goalie="@{goalieA}"
+            layout="@layout/goalie_view"
+        />
+    ....
+</layout>
 ```
 
+```Java
+    // ActivityMainBinding.java
+    public final GoalieViewBinding goalieViewA;
+```
+
+---
+class: center, middle, inverse
+
+#Binding Events
+
+@{two ways}
+---
+
+#Method References
+
+Reference methods that conform to the signature of the listener
+
+```Java
+    // old school activity reference
+    public void onGoalieA(View view) {...}
+
+        // or a handler class
+    public class GoalieHandlers {
+        public void onGoalieA(View view) { ... }
+    }
+```
 ```XML
-<ImageButton
-  android:onClick="@{superhero.avenger ? handlers.assemble : handlers.notMember}"
-/>
+    <variable name="handlers" type="GoalieHandlers"/>
+    ....
+    // old school
+    <android.support.design.widget.FloatingActionButton
+       android:onClick="onGoalieA"
+    />
+    ....
+    // handler
+    <android.support.design.widget.FloatingActionButton
+       android:onClick="GoalieHandlers::onGoalieA"
+    />
 ```
+---
 
+#Listener Bindings
+
+- Lambda expressions evaluated when the event happens
+
+- Arbitrary data binding expressions
+
+- Android Gradle Plugin 2.0+
+
+```Java
+    public class GoaliePresenter extends BaseObservable {
+
+        // event handler
+        public void onGoalieSelected() {....}
+    }
+
+```
+```XML
+    <variable name="goalieB" type="GoaliePresenter"/>
+    ....
+    // yeah Lambda!
+    <android.support.design.widget.FloatingActionButton
+       android:onClick="@{(v)->goalieB.onGoalieSelected()}"
+    />
+```
 ---
 
 class: center, middle, inverse
@@ -435,9 +578,9 @@ public class PojoActivity extends AppCompatActivity {
 
 class: center, middle, inverse
 
-# Observable Objects*
+# Observables
 
-*Objects that implement the `Observable` interface
+@{I'm watching you}
 
 ---
 
@@ -542,84 +685,192 @@ public void setRandomSuperhero(View button) {
 ```
 
 ---
-
-# BaseObservable and ObservableFields layouts
-
-### Changes: None*
-
-*other than variable types:
-
-```XML
-<variable name="superhero" type="com.devfestmn.model.SuperHeroObservable" />
-<variable name="superhero" type="com.devfestmn.model.SuperHeroPlain" />
-```
-
----
-
-# Observable Collections
-
-```Java
-ObservableArrayMap<String, Object> superHeroMap = new ObservableArrayMap<>();
-
-// setRandomSuperhero method
-SuperHero superHero = heros.get(i);
-superHeroMap.put("name", superHero.getName());
-superHeroMap.put("alias", superHero.getAlias());
-superHeroMap.put("avenger", superHero.isAvenger());
-superHeroMap.put("firstAppearance", superHero.getFirstAppearance());
-superHeroMap.put("imageUrl", superHero.getImageUrl());
-```
-
---
-
-```XML
-<data>
-    <import type="android.databinding.ObservableMap" />
-    <variable name="superhero" type="ObservableMap&#38;lt;String, Object>" />
-</data>
-
-<TextView
-    android:text="@{superhero[`name`]}"
-/>
-
-<ImageButton
-    android:onClick="@{((Boolean) superhero[`avenger`]) ? ....}"
-/>
-```
-
----
-
 class: center, middle, inverse
 
-# What about RecyclerView?*
+# Techniques
 
-*There's more than one way! Here's how I do it.
+@{Tips and Tricks}
+
+---
+GoaliePresenter
+
+```Java
+public class GoaliePresenter extends BaseObservable {
+    private NHLDataTypes.PlayerSummary playerSummary;
+    ....
+
+    @Bindable
+    public String getSavePercentage() {
+        return String.format(locale,"%1$,.3f", playerSummary.savePctg);
+    }
+
+    @Bindable
+    public String getGoalsAgainst() {....}
+
+    @Bindable
+    public String getPlayerId() {....}
+
+    @Bindable
+    public String getPlayerName() {....}
+
+    public void setPlayerSummary(NHLDataTypes.PlayerSummary playerSummary) {
+        this.playerSummary = playerSummary;
+        notifyChange();
+    }
+    ....
+}
+```
+---
+class: center, middle, inverse
+
+# Custom Views
+
+@{replacing custom views with includes}
+
+---
+
+Activity Layout
+
+```XML
+<layout >
+    <data>
+        <variable name="dark" type="boolean"/>
+        <variable name="goalieA" type="GoaliePresenter"/>
+        <variable name="goalieB" type="GoaliePresenter"/>
+    </data>
+
+    <android.support.percent.PercentRelativeLayout >
+        <include
+            android:id="@+id/goalieViewA"
+            app:goalie="@{goalieA}"
+            app:dark="@{false}"
+            layout="@layout/goalie_view"
+            app:layout_widthPercent="50%"
+            app:layout_heightPercent="100%"
+        />
+        <include
+            android:id="@+id/goalieViewB"
+            app:goalie="@{goalieB}"
+            app:dark="@{true}"
+            layout="@layout/goalie_view"
+            app:layout_widthPercent="50%"
+            app:layout_heightPercent="100%"
+            android:layout_toRightOf="@+id/goalieViewA"
+        />
+
+    </android.support.percent.PercentRelativeLayout>
+</layout>
+```
+---
+Goalie View
+
+```XML
+<layout >
+    <data>
+        <import type="android.view.View"/>
+        <variable name="dark" type="boolean"/>
+        <variable name="goalie" type="GoaliePresenter"/>
+    </data>
+    <RelativeLayout>
+    <ImageView app:actionShotId="@{goalie.playerId}" />
+
+    <TextView android:text="@{goalie.playerName.toUpperCase()}" />
+
+    <LinearLayout
+    android:background="@{dark ? @color/darkBack : @color/lightBack}" >
+        <TextView
+            android:text="@string/svPer"
+            android:textColor="@{dark ? @color/darkLabel : @color/lightLabel}" />
+        <TextView
+            android:text="@{goalie.savePercentage}"
+            android:textColor="@{dark ? @color/darkStat : @color/lightStat}" />
+        <TextView
+            android:text="@string/gaa"
+            android:textColor="@{dark ? @color/darkLabel : @color/lightLabel}" />
+        <TextView
+            android:text="@{goalie.goalsAgainst}"
+            android:textColor="@{dark ? @color/darkStat : @color/lightStat}" />
+    </LinearLayout>
+    </RelativeLayout>
+</layout>
+```
+---
+
+---
+class: center, middle, inverse
+
+# Binding Adapters
+
+@{custom binding logic}
+
+---
+# BindingAdapter
+
+- custom attributes
+- off-thread operations
+
+```Java
+public class GoaliePresenter extends BaseObservable {
+    ....
+    @BindingAdapter("bind:actionShotId")
+    public static void loadActionImage(ImageView view, String playerId) {
+        Picasso.with(view.getContext())
+            .load("https://nhl.com/images/actionshots/"+playerId+".jpg")
+            .placeholder(R.drawable.goalie_mask_black_silhouette)
+            .into(view);
+    }
+}
+```
+```XML
+<ImageView app:actionShotId="@{goalie.playerId}" />
+```
+- Can have multiple parameters
+
+```Java
+@BindingAdapter({"bind:imageUrl", "bind:error"})
+public static void loadImage(ImageView view, String url, Drawable error) {
+   Picasso.with(view.getContext()).load(url).error(error).into(view);
+}
+```
+---
+class: center, middle, inverse
+
+# What about RecyclerView?
+
+@{ here's one way }
 
 ---
 
 # ViewHolder
 
---
-
-- Layout file: no changes required!
-
-- Use `DataBindingUtil.bind` to get/create bindings
+Use `DataBindingUtil.bind` to get/create bindings
 
 ```Java
-    public static class SuperHeroHolder extends RecyclerView.ViewHolder {
-*        SuperheroItemBinding superheroItemBinding;
+    public class GoalieViewHolder extends RecyclerView.ViewHolder {
+*        private GoalieItemViewBinding binding;
 
-        public SuperHeroHolder(View itemView) {
+        public GoalieViewHolder(View itemView) {
             super(itemView);
-*           superheroItemBinding = DataBindingUtil.bind(itemView);
+            binding = DataBindingUtil.bind(itemView);
+        }
+
+        public void setGoalie(GoaliePresenter goaliePresenter) {
+*            binding.setPresenter(goaliePresenter);
         }
     }
 ```
-
 --
-
-- `DataBindingUtil` has other binding methods
-
+```XML
+<layout >
+    <data>
+        <variable name="presenter" type=".GoaliePresenter"/>
+    </data>
+    <RelativeLayout android:onClick="@{(v)-> presenter.onGoalieSelected()}">
+        <ImageView app:headShotId="@{presenter.playerId}"/>
+        <TextView android:text="@{presenter.playerName.toUpperCase()}" />
+    </RelativeLayout>
+</layout>
+```
 ---
 
 # Adapter
@@ -630,10 +881,10 @@ Inflate layout without bindings
 
 ```Java
     @Override
-    public SuperHeroHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-*       View itemView = LayoutInflater.from(parent.getContext())
-            .inflate(R.layout.superhero_item, parent, false);
-        return new SuperHeroHolder(itemView);
+    public GoalieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+*        View view = LayoutInflater.from(parent.getContext())
+*                                .inflate(R.layout.goalie_item_view,parent,false);
+        return new GoalieViewHolder(view);
     }
 //
 ```
@@ -644,54 +895,46 @@ Set binded variable
 
 ```Java
     @Override
-    public void onBindViewHolder(SuperHeroHolder holder, int position) {
-        Superhero hero = heros.get(position);
-*       holder.superheroItemBinding.setSuperhero(hero);
+    public void onBindViewHolder(GoalieViewHolder holder, int position) {
+        GoaliePresenter goaliePresenter =
+                                new GoaliePresenter(playerList.get(position));
+*       holder.setGoalie(goaliePresenter);
     }
 ```
+---
+class: center, middle, inverse
+
+# Two-Way Data Binding
+
+@{ this is really complicated }
 
 ---
+# Hold on to your brain!
 
-# Adapter / ViewHolder
+- One Way Binding
 
-```Java
-public class SuperHeroAdapter extends RecyclerView.Adapter<....> {
-    ArrayList<SuperHero> heros;
-    ....
-
-    @Override
-    public SuperHeroHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-            .inflate(R.layout.superhero_item, parent, false);
-        return new SuperHeroHolder(itemView);
-    }
-
-    @Override
-    public void onBindViewHolder(SuperHeroHolder holder, int position) {
-        holder.superheroItemBinding.setSuperhero(heros.get(position));
-    }
-
-    public static class SuperHeroHolder extends RecyclerView.ViewHolder {
-        SuperheroItemBinding superheroItemBinding;
-        public SuperHeroHolder(View itemView) {
-            super(itemView);
-            superheroItemBinding = DataBindingUtil.bind(itemView);
-        }
-    }
-    ....
-}
+```XML
+// model object
+<variable name="goalie" type="PlayerSummary"/>
+....
+<EditText android:text="@{goalie.playerName}"/>
 ```
+--
+
+- Two Way Binding
+
+```XML
+<variable name="goalie" type="PlayerSummary"/>
+...
+*<EditText android:text="@{=goalie.playerName}"/>
+```
+--
+
+- Variable does NOT need to be an Observable.  In fact, you might not want it to be!
+
+- Not documented on https://developer.android.com (but in medium article by google)
 
 ---
-
-class: center, middle
-
-# .butter[ButterKnife]
-###vs
-#Android Data Binding
-
----
-
 class: center, middle, inverse
 
 # Thanks!
@@ -709,6 +952,7 @@ plus.google.com/+ChrisDavis0
 
 
 </textarea>
+<!-- @formatter:on -->
 <script src="remark.js">
 </script>
 <script>
