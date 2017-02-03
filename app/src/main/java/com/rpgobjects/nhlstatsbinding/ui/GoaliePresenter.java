@@ -11,10 +11,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
 
-/**
- * Created by chris on 1/27/17.
- */
-
 public class GoaliePresenter extends BaseObservable {
     private NHLDataTypes.PlayerSummary playerSummary;
     private GoalieSelectedHandler goalieSelectedHandler;
@@ -58,6 +54,7 @@ public class GoaliePresenter extends BaseObservable {
         Picasso.with(view.getContext()).load("https://nhl.bamcontent.com/images/headshots/current/168x168/"+playerId+".jpg").placeholder(R.drawable.goalie_mask_black_silhouette).into(view);
     }
 
+    // event handler
     public void onGoalieSelected() {
         if(goalieSelectedHandler!=null) {
             goalieSelectedHandler.onGoalieSelected(playerSummary);
