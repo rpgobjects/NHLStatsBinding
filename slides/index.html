@@ -121,13 +121,9 @@ button.setText('Some text');
 button.setOnClickListener(handler);
 ```
 ---
-# More Why...
+## MVVM / MVP
 
---
-
-.img25[![](mvvm-databinding.png)]
-
-- Ideal for MVVM / MVP
+.img35[![](mvvm-databinding.png)]
 
 --
 
@@ -169,6 +165,8 @@ jakewharton.github.io/butterknife
 class: center, middle, inverse
 
 # Databinding Basics
+
+.img35[![Default-aligned image](youthgoalie.jpg)]
 
 ---
 class: center, middle, inverse
@@ -328,6 +326,8 @@ class: center, middle, inverse
 
 @{deeper dive}
 
+.img35[![Default-aligned image](rink.png)]
+
 ---
 
 
@@ -362,14 +362,14 @@ Java like expressions you can use in `@{}`
     ...
 <TextView android:visibility="@{hide ? View.VISIBLE : View.GONE}" />
 ```
-
+--
 - Alias class name
 
 
 ```XML
     <import type="com.example.goalie.View" alias="goalieView"/>
 ```
-
+--
 - Access resources as part of expressions
 
 ```XML
@@ -416,7 +416,9 @@ class: center, middle, inverse
 
 # Code Generation
 
-@{under the hood}
+@{under the mask}
+
+.img35[![Default-aligned image](masks.jpg)]
 
 ---
 
@@ -485,6 +487,9 @@ class: center, middle, inverse
 #Binding Events
 
 @{two ways}
+
+.img35[![Default-aligned image](puckinmask.jpg)]
+
 ---
 
 #Method References
@@ -543,44 +548,11 @@ Reference methods that conform to the signature of the listener
 
 class: center, middle, inverse
 
-# What about images?*
-
-*How not to block the UI thread
-
----
-
-#Binding Adapters
-
-- When attributes need custom binding logic.
-- Attribute has no setter `android:paddingLeft`
-- Requires background task i.e. image loading
-
-```Java
-public class PojoActivity extends AppCompatActivity {
-    ....
-    @BindingAdapter("binder:imageUrl")
-    public static void loadImage(ImageView view, String url) {
-        Picasso.with(view.getContext()).load(url)
-          .placeholder(R.drawable.marvel_heroes).into(view);
-    }
-
-}
-```
-
-```Xml
-<ImageView
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:imageUrl="@{superhero.imageUrl} "
-/>
-```
-
----
-
-class: center, middle, inverse
-
 # Observables
 
 @{I'm watching you}
+
+.img35[![Default-aligned image](simpsons.jpg)]
 
 ---
 
@@ -691,6 +663,8 @@ class: center, middle, inverse
 
 @{Tips and Tricks}
 
+.img35[![Default-aligned image](goal.gif)]
+
 ---
 GoaliePresenter
 
@@ -726,6 +700,8 @@ class: center, middle, inverse
 # Custom Views
 
 @{replacing custom views with includes}
+
+.screenshot[![](screen1.png)]
 
 ---
 
@@ -795,8 +771,6 @@ Goalie View
 </layout>
 ```
 ---
-
----
 class: center, middle, inverse
 
 # Binding Adapters
@@ -838,6 +812,8 @@ class: center, middle, inverse
 # What about RecyclerView?
 
 @{ here's one way }
+
+.screenshot[![](applist.png)]
 
 ---
 
@@ -907,6 +883,8 @@ class: center, middle, inverse
 # Two-Way Data Binding
 
 @{ this is really complicated }
+
+.screenshot[![](einstein.jpg)]
 
 ---
 # Hold on to your brain!
